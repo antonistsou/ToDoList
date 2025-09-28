@@ -1,8 +1,7 @@
 'use client'
 
-import { Box, Button, Input, Text } from '@chakra-ui/react';
-import axios from 'axios';
-import React, { FormEvent, useRef, useState } from 'react'
+import { Button, Input, Text } from '@chakra-ui/react';
+import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 
@@ -23,7 +22,6 @@ const SignUp = () => {
         if (username != '' && username.length > 7) {
             seterror(false);
             console.log(password);
-            const newUser = { username: username, password: password }
             // axios.post('http://localhost:3000/new-user', {newUser})
 
             navigate('/');
