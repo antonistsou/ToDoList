@@ -4,16 +4,17 @@ const app = express();
 const myslq = require('mysql2');
 const bcrypt = require('bcrypt');
 
+require('dotenv').config();
 app.use(express.json());
 app.use(cors());
 
 const db = myslq.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'todo'
+    host: proccess.env.DB_HOST,
+    user: process.env.DB_ROOT,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 })
-
+mysql://root:QkJdcZbdVEVpPrkAiKjJlEUTwtUWRwZQ@shinkansen.proxy.rlwy.net:57484/railway
 db.connect(error => {
     if (!error) {
         console.log('Connected to database')
@@ -113,5 +114,5 @@ app.delete('/delete/:id', (req, res) => {
     });
 });
 
-const port = process.env.port || 3000;
+const port = process.env.port || 3306;
 app.listen(port, () => { console.log(`Listening at port ${port}`) });
