@@ -18,6 +18,7 @@ interface toDo {
 
 function App() {
 
+  const endpointUrl = 'https://to-do-list-lo33p9xup-antonistsous-projects.vercel.app/'
   const [toDo, setToDo] = useState<toDo[]>([]);
 
   const [refresh, setRefresh] = useState(0);
@@ -25,7 +26,7 @@ function App() {
   const [sortOrder, setOrder] = useState<"newest" | "oldest">("newest");
 
   const fetchTodos = () => {
-    axios.get('http://localhost:3000/get-todo')
+    axios.get(`${endpointUrl}/get-todo`)
       .then(res => setToDo(res.data))
       .catch(err => console.error('Error fetching todos:', err));
   };
@@ -78,7 +79,7 @@ function App() {
           onDelete={(id) => {
             // setToDo(activeToDo.filter((t) => t.id !== id));
             console.log(id)
-            axios.put(`http://localhost:3000/setCompleted/${id}`)
+            axios.put(`${endpointUrl}/${id}`)
               .then(() => setRefresh(prev => prev + 1))
               .catch((error) => console.error('Deleting error', error)
               );

@@ -27,7 +27,7 @@ const TodoList = ({ activeToDo, completedToDo, handleEdit, onDelete }: Props) =>
 
     const saveNewDescription = (id: number) => {
         axios
-            .put(`http://localhost:3000/update-todo/${id}`, { description: newDescription })
+            .put(`https://to-do-list-lo33p9xup-antonistsous-projects.vercel.app/${id}`, { description: newDescription })
             .then(() => {
                 handleEdit(id, newDescription);
                 setEditingId(null);

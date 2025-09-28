@@ -9,12 +9,17 @@ app.use(express.json());
 app.use(cors());
 
 const db = myslq.createConnection({
-    host: proccess.env.DB_HOST,
+    host: process.env.DB_HOST,
     user: process.env.DB_ROOT,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+    ssl: {
+        rejectUnauthorized: false  // Railway often requires SSL
+    }
 })
-mysql://root:QkJdcZbdVEVpPrkAiKjJlEUTwtUWRwZQ@shinkansen.proxy.rlwy.net:57484/railway
+
+// mysql://root:QkJdcZbdVEVpPrkAiKjJlEUTwtUWRwZQ@shinkansen.proxy.rlwy.net:57484/railway
 db.connect(error => {
     if (!error) {
         console.log('Connected to database')
@@ -114,5 +119,5 @@ app.delete('/delete/:id', (req, res) => {
     });
 });
 
-const port = process.env.port || 3306;
+const port = process.env.port || 3000;
 app.listen(port, () => { console.log(`Listening at port ${port}`) });
