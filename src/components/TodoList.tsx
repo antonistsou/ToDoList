@@ -114,7 +114,8 @@ const TodoList = ({ activeToDo, completedToDo, handleEdit, onChecked, onDelete }
                                 <Table.ColumnHeader>Created At</Table.ColumnHeader>
                                 <Table.ColumnHeader>Importance</Table.ColumnHeader>
                                 <Table.ColumnHeader></Table.ColumnHeader>
-                                <Table.ColumnHeader textAlign="end"></Table.ColumnHeader>
+                                <Table.ColumnHeader></Table.ColumnHeader>
+                                <Table.ColumnHeader></Table.ColumnHeader>
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
