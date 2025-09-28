@@ -13,15 +13,16 @@ interface toDo {
   description: string;
   createdAt: string;
   importance: string;
+  completed: number;
 }
 
 function App() {
 
   const [toDo, setToDo] = useState<toDo[]>([]);
+
   const [refresh, setRefresh] = useState(0);
   const [selectedImportance, setImportance] = useState("");
   const [sortOrder, setOrder] = useState<"newest" | "oldest">("newest");
-  const [issorted, setissorted] = useState(false);
 
   const fetchTodos = () => {
     axios.get('http://localhost:3000/get-todo')
@@ -43,12 +44,17 @@ function App() {
     setToDo(toDo.map(todo => todo.id === id ? { ...todo, description: newDescription } : todo))
   }
 
+
+  const sorted = toDo.filter((t) => t.completed === 1);
+  const completedToDO = [...sorted].reverse();
+
   const filteredToDo =
     selectedImportance === ""
       ? toDo
       : toDo.filter((t) => t.importance === selectedImportance);
 
   const SortedToDo = sortOrder === 'oldest' ? filteredToDo : [...filteredToDo].reverse();
+  const activeToDo = SortedToDo.filter((t) => t.completed === 0);
 
   return (
     <>
@@ -59,20 +65,23 @@ function App() {
         <HStack p='5'>
           <SortButton sortOrder={sortOrder} onToggleSort={() => {
             setOrder(sortOrder === 'newest' ? 'oldest' : 'newest')
-            setissorted(prev => !prev)
           }}></SortButton>
           <ImportanceFilter
             selectedFilter={selectedImportance}
             onSelectImportance={setImportance}
           ></ImportanceFilter>
         </HStack>
-        <TodoList toDo={SortedToDo}
-          isSorted={issorted}
+        <TodoList
+          activeToDo={activeToDo}
+          completedToDo={completedToDO}
           handleEdit={updateToDo}
           onDelete={(id) => {
-            setToDo(toDo.filter((t) => t.id !== id));
-            axios.delete(`http://localhost:3000/delete/${id}`)
-              .catch((error) => console.error('Deleting error', error));
+            // setToDo(activeToDo.filter((t) => t.id !== id));
+            console.log(id)
+            axios.put(`http://localhost:3000/setCompleted/${id}`)
+              .then(() => setRefresh(prev => prev + 1))
+              .catch((error) => console.error('Deleting error', error)
+              );
           }
           }>
         </TodoList>

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const myslq = require('mysql2');
+const bcrypt = require('bcrypt');
 
 app.use(express.json());
 app.use(cors());
@@ -18,7 +19,7 @@ db.connect(error => {
         console.log('Connected to database')
     }
     else {
-        console.og('Failed to connect')
+        console.log('Failed to connect')
     }
 })
 
@@ -29,6 +30,21 @@ app.post('/add-todo', (req, res) => {
         else {
             const newToDo = 'select * from todo'
             db.query(newToDo, (error, newList) => {
+                res.send(newList);
+            });
+        }
+    })
+})
+
+app.post('/new-user', async (req, res) => {
+    const query = 'insert into user (username,password) values (?,?)'
+    const cpassword = await bcrypt.hash(req.body.user.password);
+
+    db.query(query, [req.body.user.username, cpassword], (error, result) => {
+        if (error) console.log(error);
+        else {
+            const newuser = 'select * from user'
+            db.query(newuser, (error, newList) => {
                 res.send(newList);
             });
         }
@@ -51,6 +67,24 @@ app.put('/update-todo/:id', (req, res) => {
     const query = 'UPDATE todo SET description = ? WHERE id = ?';
 
     db.query(query, [description, id], (error, result) => {
+        if (error) {
+            console.error('Error updating todo:', error);
+            return res.status(500).json({ message: 'Error updating todo' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Todo not found' });
+        }
+
+        res.status(200).json({ message: 'Todo updated successfully' });
+    });
+});
+
+app.put('/setCompleted/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'UPDATE todo SET completed = 1 WHERE id = ?';
+
+    db.query(query, [id], (error, result) => {
         if (error) {
             console.error('Error updating todo:', error);
             return res.status(500).json({ message: 'Error updating todo' });
