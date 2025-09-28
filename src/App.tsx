@@ -18,7 +18,6 @@ interface toDo {
 
 function App() {
 
-  const endpointUrl = 'https://to-do-list-lo33p9xup-antonistsous-projects.vercel.app/'
   const [toDo, setToDo] = useState<toDo[]>([]);
 
   const [refresh, setRefresh] = useState(0);
@@ -26,7 +25,7 @@ function App() {
   const [sortOrder, setOrder] = useState<"newest" | "oldest">("newest");
 
   const fetchTodos = () => {
-    axios.get(`${endpointUrl}/get-todo`)
+    axios.get('http://localhost:3000/get-todo')
       .then(res => setToDo(res.data))
       .catch(err => console.error('Error fetching todos:', err));
   };
@@ -45,9 +44,11 @@ function App() {
     setToDo(toDo.map(todo => todo.id === id ? { ...todo, description: newDescription } : todo))
   }
 
+  //sort todo based in time for consisten results
+  const completedToDO = toDo
+    .filter((t) => t.completed === 1)
+    .sort((a, b) => b.id - a.id); // assuming higher id = newer task
 
-  const sorted = toDo.filter((t) => t.completed === 1);
-  const completedToDO = [...sorted].reverse();
 
   const filteredToDo =
     selectedImportance === ""
@@ -76,13 +77,18 @@ function App() {
           activeToDo={activeToDo}
           completedToDo={completedToDO}
           handleEdit={updateToDo}
-          onDelete={(id) => {
-            // setToDo(activeToDo.filter((t) => t.id !== id));
-            console.log(id)
-            axios.put(`${endpointUrl}/${id}`)
+          onChecked={(id) => {
+            axios.put(`http://localhost:3000/setCompleted/${id}`)
               .then(() => setRefresh(prev => prev + 1))
               .catch((error) => console.error('Deleting error', error)
               );
+
+          }
+          }
+          onDelete={(id) => {
+            setToDo(completedToDO.filter((t) => t.id !== id));
+            axios.delete(`http://localhost:3000/delete/${id}`)
+              .catch((error) => console.error('Deleting error', error));
           }
           }>
         </TodoList>

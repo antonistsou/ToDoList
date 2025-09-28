@@ -4,19 +4,14 @@ const app = express();
 const myslq = require('mysql2');
 const bcrypt = require('bcrypt');
 
-require('dotenv').config();
 app.use(express.json());
 app.use(cors());
 
 const db = myslq.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_ROOT,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    ssl: {
-        rejectUnauthorized: false  // Railway often requires SSL
-    }
+    host: "localhost",
+    user: "root",
+    password: "password",
+    database: "todo",
 })
 
 // mysql://root:QkJdcZbdVEVpPrkAiKjJlEUTwtUWRwZQ@shinkansen.proxy.rlwy.net:57484/railway

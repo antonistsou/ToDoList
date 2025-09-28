@@ -14,10 +14,11 @@ interface Props {
     activeToDo: toDo[];
     completedToDo: toDo[];
     handleEdit: (id: number, description: string) => void;
+    onChecked: (id: number) => void;
     onDelete: (id: number) => void;
 }
 
-const TodoList = ({ activeToDo, completedToDo, handleEdit, onDelete }: Props) => {
+const TodoList = ({ activeToDo, completedToDo, handleEdit, onChecked, onDelete }: Props) => {
     const [editingId, setEditingId] = useState<number | null>(null);
     const [newDescription, setNewDescription] = useState('');
 
@@ -27,7 +28,7 @@ const TodoList = ({ activeToDo, completedToDo, handleEdit, onDelete }: Props) =>
 
     const saveNewDescription = (id: number) => {
         axios
-            .put(`https://to-do-list-lo33p9xup-antonistsous-projects.vercel.app/${id}`, { description: newDescription })
+            .put(`http://localhost:3000/update-todo/${id}`, { description: newDescription })
             .then(() => {
                 handleEdit(id, newDescription);
                 setEditingId(null);
@@ -92,7 +93,7 @@ const TodoList = ({ activeToDo, completedToDo, handleEdit, onDelete }: Props) =>
                                     </Button>
                                 </Table.Cell>
                                 <Table.Cell textAlign="end">
-                                    <Button onClick={() => onDelete(t.id)}>Checked</Button>
+                                    <Button onClick={() => onChecked(t.id)}>Checked</Button>
                                 </Table.Cell>
                             </Table.Row>
                         ))}
@@ -125,26 +126,31 @@ const TodoList = ({ activeToDo, completedToDo, handleEdit, onDelete }: Props) =>
                                     <Table.Cell>{t.createdAt}</Table.Cell>
                                     <Table.Cell>{t.importance}</Table.Cell>
                                     <Table.Cell>Completed</Table.Cell>
+                                    <Table.Cell>
 
-                                    {/* Line through completed row */}
-                                    {t.completed === 1 && (
-                                        <Box
-                                            position="absolute"
-                                            top="50%"
-                                            left={0}
-                                            width="100%"
-                                            borderTop="1px solid gray"
-                                            zIndex={1}
-                                            opacity={0.5}
-                                            pointerEvents="none"
-                                        />
-                                    )}
+                                        {t.completed === 1 && (
+                                            <Box
+                                                position="absolute"
+                                                top="50%"
+                                                left={0}
+                                                width="100%"
+                                                borderTop="1px solid gray"
+                                                zIndex={1}
+                                                opacity={0.5}
+                                                pointerEvents="none"
+                                            />
+                                        )}
+                                    </Table.Cell>
+                                    <Table.Cell textAlign="end">
+                                        <Button onClick={() => onDelete(t.id)}>Delete</Button>
+                                    </Table.Cell>
                                 </Table.Row>
                             ))}
                         </Table.Body>
                     </Table.Root>
                 </>
-            )}
+            )
+            }
         </>
     );
 };

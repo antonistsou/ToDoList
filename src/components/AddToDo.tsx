@@ -18,7 +18,7 @@ const AddToDo = ({ onSubmit }: Props) => {
         e.preventDefault();
         if (text.trim() !== "") {
             const todo = { description: text, createdAt: new Date().toISOString().slice(0, 10), importance: impo.current?.value || "HIGH" }
-            axios.post('https://to-do-list-lo33p9xup-antonistsous-projects.vercel.app/add-todo', { todo })
+            axios.post('http://localhost:3000/add-todo', { todo })
             onSubmit();
             setText('');
         }
